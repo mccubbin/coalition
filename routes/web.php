@@ -22,3 +22,6 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('tasks', 'TaskController');
+
+//Route::get('tasks','TaskController@index');
+Route::post('tasks/update-priority','TaskController@updatePriority');

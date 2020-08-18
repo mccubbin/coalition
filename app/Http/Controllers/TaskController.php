@@ -9,7 +9,7 @@ class TaskController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     /**
@@ -19,7 +19,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
+        $tasks = Task::orderBy('priority','asc')->get();
         return view('tasks', ['tasks' => $tasks]);
     }
 
@@ -30,7 +30,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        return view('taskForm');
     }
 
     /**
@@ -41,7 +41,10 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Task::create($request->all());
+        return redirect()
+            ->route('tasks.index')
+            ->with('success', 'Created task.');
     }
 
     /**
@@ -63,7 +66,7 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        //
+        return view('taskForm')->with('task', $task);
     }
 
     /**
@@ -75,7 +78,10 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        //
+        $task->update($request->all());
+        return redirect()
+            ->route('tasks.index')
+            ->with('success', 'Updated task.');
     }
 
     /**
@@ -86,6 +92,25 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $task->delete();
+        return redirect()
+            ->route('tasks.index')
+            ->with('success', "Task #{$task->id} was deleted.");
+    }
+
+    public function updatePriority(Request $request)
+    {
+
+        if(!$request->exists('data')) {
+            return response('Error.', 404);
+        }
+
+        foreach($request->data as $priority){
+            $task = Task::find($priority['id']);
+            $task->priority = $priority['priority'];
+            $task->save();
+        }
+
+        return ['status'=>'success','message'=>'Updated'];
     }
 }

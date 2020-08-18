@@ -7,21 +7,27 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <title>@yield('title', config('app.name', 'Laravel') )</title>
 
     <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    @section('fonts')
+        <link rel="dns-prefetch" href="//fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    @show
 
     <!-- Styles -->
+    @stack('styles')
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <script src="https://unpkg.com/jquery@2.2.4/dist/jquery.js"></script>
-    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-    <link href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css"/>
+
+    <!-- Scripts -->
+    @section('scripts')
+        <script src="https://unpkg.com/jquery@2.2.4/dist/jquery.js"></script>
+        <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+        <script src="{{ asset('js/app.js') }}" defer></script>
+    @show
 </head>
+
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
@@ -76,6 +82,14 @@
         </nav>
 
         <main class="py-4">
+            @if (session()->has('success'))
+                <div class="alert-success">
+                    <ul>
+                        <li>{!! session()->get('success') !!}</li>
+                    </ul>
+                </div>
+            @endif
+
             @yield('content')
         </main>
     </div>
